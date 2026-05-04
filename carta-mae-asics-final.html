@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mãe, leia isso antes de dizer não 🏐</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,400;1,600&family=Syne:wght@400;500;600;700&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #080c0a;
+    --surface: #0e1510;
+    --card:    #121a14;
+    --border:  #1e2e22;
+    --green:   #1dff76;
+    --green2:  #0db854;
+    --green-dim: #0a6630;
+    --red:     #ff4d4d;
+    --white:   #f0f7f2;
+    --muted:   #6b8872;
+    --text:    #d4e8da;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    font-family: 'Syne', sans-serif;
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── NOISE OVERLAY ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    opacity: 0.35;
+  }
+
+  * { position: relative; z-index: 1; }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(8,12,10,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 20px;
+    display: flex; align-items: center; gap: 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  nav::-webkit-scrollbar { display: none; }
+  nav a {
+    text-decoration: none; color: var(--muted);
+    font-size: 11px; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    padding: 16px 18px; white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  nav a:hover { color: var(--green); border-bottom-color: var(--green); }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px; font-weight: 700; font-style: italic;
+    color: var(--green); letter-spacing: 0; padding: 16px 20px 16px 0;
+    border-right: 1px solid var(--border); margin-right: 8px;
+    white-space: nowrap; flex-shrink: 0;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative; overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.4;
+    mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(29,255,118,0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    animation: pulse 4s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100%{transform:translate(-50%,-50%) scale(1)} 50%{transform:translate(-50%,-50%) scale(1.15)} }
+
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    border: 1px solid var(--green-dim);
+    color: var(--green); font-size: 10px; font-weight: 600;
+    letter-spacing: 3px; text-transform: uppercase;
+    padding: 7px 16px; margin-bottom: 36px;
+    background: rgba(29,255,118,0.05);
+  }
+  .hero-tag span { width: 6px; height: 6px; background: var(--green); border-radius: 50%; animation: blink 1.5s ease-in-out infinite; }
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(44px, 9vw, 96px);
+    line-height: 1.0; font-weight: 700;
+    color: var(--white); margin-bottom: 28px;
+    letter-spacing: -1px;
+  }
+  .hero h1 em { color: var(--green); font-style: italic; }
+
+  .hero-sub {
+    font-size: 15px; color: var(--muted); max-width: 440px;
+    margin: 0 auto 48px; line-height: 1.7;
+  }
+
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 10px;
+    background: var(--green); color: var(--bg);
+    font-weight: 700; font-size: 12px; letter-spacing: 2px; text-transform: uppercase;
+    padding: 14px 28px; text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .hero-cta:hover { background: var(--green2); transform: translateY(-2px); }
+
+  .shoe {
+    font-size: 90px; display: block; margin-bottom: 20px;
+    animation: float 5s ease-in-out infinite;
+    filter: drop-shadow(0 0 30px rgba(29,255,118,0.3));
+  }
+  @keyframes float { 0%,100%{transform:translateY(0) rotate(-4deg)} 50%{transform:translateY(-14px) rotate(4deg)} }
+
+  /* ─── SECTIONS ─── */
+  section {
+    max-width: 760px; margin: 0 auto;
+    padding: 80px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .section-eyebrow {
+    font-size: 10px; font-weight: 600; letter-spacing: 4px; text-transform: uppercase;
+    color: var(--green); margin-bottom: 14px; display: block;
+  }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(30px, 5vw, 50px);
+    font-weight: 700; color: var(--white);
+    line-height: 1.1; margin-bottom: 36px;
+  }
+  .section-title em { color: var(--green); font-style: italic; }
+
+  /* ─── LETTER CARD ─── */
+  .letter-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green);
+    padding: 40px;
+    position: relative; overflow: hidden;
+  }
+  .letter-card::before {
+    content: '"';
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 160px; color: var(--green); opacity: 0.08;
+    position: absolute; top: -20px; left: 16px; line-height: 1;
+  }
+  .salutation {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-style: italic; color: var(--green);
+    margin-bottom: 24px;
+  }
+  .letter-body p {
+    font-size: 15px; line-height: 1.85; color: var(--text);
+    margin-bottom: 16px;
+  }
+  .letter-body p:last-child { margin-bottom: 0; }
+  .letter-body strong { color: var(--white); }
+
+  /* ─── ARG CARDS ─── */
+  .arg-grid { display: flex; flex-direction: column; gap: 2px; }
+  .arg-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 3px solid transparent;
+    padding: 24px 28px;
+    display: flex; gap: 20px; align-items: flex-start;
+    transition: border-left-color 0.2s, background 0.2s;
+  }
+  .arg-card:hover { border-left-color: var(--green); background: var(--surface); }
+  .arg-icon { font-size: 28px; flex-shrink: 0; margin-top: 2px; }
+  .arg-title { font-weight: 600; font-size: 14px; color: var(--white); margin-bottom: 6px; }
+  .arg-text { font-size: 13.5px; line-height: 1.7; color: var(--muted); }
+  .arg-text strong { color: var(--text); }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--border); margin-top: 40px;
+    background: var(--card);
+  }
+  @media(max-width:560px){ .stats-bar{grid-template-columns:repeat(2,1fr)} }
+  .stat {
+    padding: 24px 16px; text-align: center;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px; font-weight: 700; color: var(--green);
+    display: block; line-height: 1;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+    color: var(--muted); margin-top: 6px; display: block;
+  }
+
+  /* ─── COMPARISON TABLE ─── */
+  .compare { border: 1px solid var(--border); overflow: hidden; }
+  .compare-header {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+    background: var(--surface); border-bottom: 1px solid var(--border);
+  }
+  .compare-header div {
+    padding: 14px 16px; font-size: 10px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--muted);
+    border-right: 1px solid var(--border);
+  }
+  .compare-header div:nth-child(2) { color: var(--red); }
+  .compare-header div:nth-child(3) { color: var(--green); }
+  .compare-header div:last-child { border-right: none; }
+
+  .compare-row {
+    display: grid; grid-template-columns: 1.2fr 1fr 1fr;
+    border-bottom: 1px solid var(--border);
+  }
+  .compare-row:last-child { border-bottom: none; }
+  .compare-row div {
+    padding: 16px; font-size: 13px; line-height: 1.5;
+    border-right: 1px solid var(--border); color: var(--muted);
+  }
+  .compare-row div:last-child { border-right: none; }
+  .compare-row div:first-child { font-weight: 600; color: var(--text); font-size: 12.5px; }
+  .compare-row div:nth-child(2) { background: rgba(255,77,77,0.04); color: rgba(255,100,100,0.8); }
+  .compare-row div:nth-child(3) { background: rgba(29,255,118,0.04); color: var(--green2); }
+
+  /* ─── INJURY BANNER ─── */
+  .injury-banner {
+    background: rgba(255,77,77,0.08);
+    border: 1px solid rgba(255,77,77,0.25);
+    border-left: 3px solid var(--red);
+    padding: 28px 32px; margin-top: 40px;
+  }
+  .injury-banner h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; color: #ff8080; margin-bottom: 10px;
+  }
+  .injury-banner p { font-size: 14px; color: var(--muted); line-height: 1.7; }
+
+  .injury-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px; margin-top: 2px;
+  }
+  @media(max-width:480px){ .injury-grid{grid-template-columns:1fr} }
+  .injury-item {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 2px solid rgba(255,77,77,0.5);
+    padding: 18px 20px;
+  }
+  .inj-title { font-weight: 600; font-size: 13.5px; color: #ff8080; margin-bottom: 5px; }
+  .inj-cause { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+
+  /* ─── MATH ─── */
+  .math-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 32px; margin-top: 20px;
+  }
+  .math-card > p { font-size: 14px; line-height: 1.7; color: var(--muted); margin-bottom: 20px; }
+  .math-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 12px 0; border-bottom: 1px solid var(--border); font-size: 14px;
+  }
+  .math-row:last-of-type { border-bottom: none; }
+  .math-row .label { color: var(--muted); }
+  .math-row .value { font-weight: 600; }
+  .math-row .value.red { color: #ff8080; }
+  .math-row .value.grn { color: var(--green); }
+  .math-total {
+    background: var(--surface); border: 1px solid var(--border);
+    padding: 16px 20px; display: flex; justify-content: space-between;
+    font-weight: 700; font-size: 15px; margin-top: 8px; color: var(--white);
+  }
+  .math-total span:last-child { color: #ff8080; }
+  .math-divider {
+    margin-top: 20px; padding-top: 20px;
+    border-top: 1px solid var(--green-dim);
+  }
+
+  /* ─── MYTH GRID ─── */
+  .myth-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 2px;
+  }
+  @media(max-width:500px){ .myth-grid{grid-template-columns:1fr} }
+  .myth-card {
+    background: var(--card); border: 1px solid var(--border);
+    padding: 22px;
+  }
+  .myth-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 10px; display: block;
+  }
+  .myth-card.bad .myth-label { color: #ff8080; }
+  .myth-card.good .myth-label { color: var(--green); }
+  .myth-card.bad { border-top: 2px solid rgba(255,77,77,0.4); }
+  .myth-card.good { border-top: 2px solid var(--green-dim); }
+  .myth-card p { font-size: 13.5px; line-height: 1.65; color: var(--muted); }
+
+  /* ─── HIGHLIGHT CARD ─── */
+  .highlight-card {
+    background: rgba(29,255,118,0.07);
+    border: 1px solid var(--green-dim);
+    border-left: 3px solid var(--green);
+    padding: 36px;
+  }
+  .highlight-card h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; color: var(--white); margin-bottom: 14px;
+  }
+  .highlight-card p { font-size: 15px; line-height: 1.8; color: var(--text); }
+  .highlight-card strong { color: var(--green); }
+
+  /* ─── PARCELAS ─── */
+  .parcelas { border: 1px solid var(--border); overflow: hidden; margin-top: 0; }
+  .parcelas-header {
+    background: var(--surface); color: var(--muted);
+    padding: 14px 24px; font-size: 10px; font-weight: 600;
+    letter-spacing: 3px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .parcela-row {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 24px; border-bottom: 1px solid var(--border);
+    transition: background 0.15s;
+  }
+  .parcela-row:last-child { border-bottom: none; }
+  .parcela-row:hover { background: var(--surface); }
+  .parcela-n { font-size: 14px; color: var(--text); font-weight: 500; }
+  .parcela-compare { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .parcela-val {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 26px; font-weight: 700; color: var(--green);
+  }
+  .parcela-star {
+    background: var(--green); color: var(--bg);
+    font-size: 9px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 3px 8px; margin-left: 10px; vertical-align: middle;
+  }
+
+  /* ─── STEPS ─── */
+  .steps { border: 1px solid var(--border); overflow: hidden; }
+  .step {
+    display: flex; gap: 20px; align-items: flex-start;
+    background: var(--card); padding: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .step:last-child { border-bottom: none; }
+  .step:hover { background: var(--surface); }
+  .step-num {
+    background: var(--green); color: var(--bg);
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 700;
+    width: 44px; height: 44px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .step-title { font-weight: 600; font-size: 14px; color: var(--white); margin-bottom: 5px; }
+  .step-text { font-size: 13.5px; color: var(--muted); line-height: 1.6; }
+  .step-text strong { color: var(--green); }
+
+  /* ─── CUSTO GRID ─── */
+  .custo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
+  @media(max-width:480px){ .custo-grid{grid-template-columns:1fr} }
+  .custo-card {
+    background: var(--card); border: 1px solid var(--border); padding: 24px;
+  }
+  .custo-card.bad { border-top: 2px solid rgba(255,77,77,0.5); }
+  .custo-card.good { border-top: 2px solid var(--green); }
+  .custo-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 14px; display: block;
+  }
+  .custo-card.bad .custo-label { color: #ff8080; }
+  .custo-card.good .custo-label { color: var(--green); }
+  .custo-item {
+    font-size: 13px; color: var(--muted); padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .custo-item:last-of-type { border-bottom: none; }
+  .custo-total { font-size: 17px; font-weight: 700; margin-top: 14px; }
+  .custo-card.bad .custo-total { color: #ff8080; }
+  .custo-card.good .custo-total { color: var(--green); }
+
+  /* ─── FINAL ─── */
+  .final-section {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-top: 2px solid var(--green);
+    padding: 60px 40px; text-align: center;
+    position: relative; overflow: hidden;
+  }
+  .final-section::before {
+    content: '🏐';
+    position: absolute; font-size: 240px; opacity: 0.04;
+    bottom: -30px; right: -20px; z-index: 0;
+    animation: float 6s ease-in-out infinite;
+  }
+  .final-section h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 34px; color: var(--white); margin-bottom: 24px;
+    font-style: italic;
+  }
+  .final-section p {
+    font-size: 15px; color: var(--muted); line-height: 1.85;
+    max-width: 500px; margin: 0 auto 14px;
+  }
+  .final-section strong { color: var(--green); }
+  .sig {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-size: 22px;
+    color: var(--green); margin-top: 36px; display: block;
+  }
+
+  /* ─── SCROLLBAR ─── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg); }
+  ::-webkit-scrollbar-thumb { background: var(--green-dim); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Para a Mãe 🏐</div>
+  <a href="#intro">Introdução</a>
+  <a href="#tecnologia">Tecnologia</a>
+  <a href="#tenis-errado">Tênis errado</a>
+  <a href="#financeiro">Financeiro</a>
+  <a href="#cartao">O cartão</a>
+  <a href="#final">Conclusão</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <span class="shoe">👟</span>
+  <div class="hero-tag"><span></span> Proposta irrecusável — leia até o fim</div>
+  <h1>Querida <em>Mãe,</em><br>preciso te contar<br>uma coisa.</h1>
+  <p class="hero-sub">Antes de dizer não de vez, dá uma chance para os argumentos. Prometo que são racionais, fundamentados e feitos com amor.</p>
+  <a class="hero-cta" href="#intro">Começar a leitura ↓</a>
+</div>
+
+<!-- SEÇÃO 1 — INTRODUÇÃO -->
+<section id="intro">
+  <span class="section-eyebrow">Parte 01 — O pedido</span>
+  <h2 class="section-title">Não é frescura.<br>É <em>equipamento.</em></h2>
+
+  <div class="letter-card">
+    <div class="salutation">Mãe querida,</div>
+    <div class="letter-body">
+      <p>Sei que você trabalha duro, que o dinheiro não cai do céu e que todo gasto precisa de justificativa. Por isso mesmo, resolvi fazer a coisa certa: <strong>argumentar de forma honesta e completa</strong>, ao invés de só pedir.</p>
+      <p>O tênis que quero se chama <strong>Asics Metarise 2 Paris</strong>. Não é frescura, não é luxo, não é moda. É um equipamento esportivo específico para vôlei, que vai direto impactar meu desempenho e, mais importante, <strong>a saúde dos meus joelhos e tornozelos</strong>.</p>
+      <p>Continue lendo. Você vai entender. 💚</p>
+    </div>
+  </div>
+</section>
+
+<!-- SEÇÃO 2 — TECNOLOGIA -->
+<section id="tecnologia">
+  <span class="section-eyebrow">Parte 02 — A tecnologia</span>
+  <h2 class="section-title">Por que esse<br>tênis é <em>diferente</em></h2>
+
+  <div class="arg-grid">
+    <div class="arg-card">
+      <div class="arg-icon">🦴</div>
+      <div>
+        <div class="arg-title">Proteção real para as articulações</div>
+        <div class="arg-text">O Metarise 2 tem espuma <strong>FF BLAST™ PLUS ECO</strong> na entressola — tecnologia que absorve o impacto nas aterrissagens após os saltos. No vôlei, a gente salta dezenas de vezes por treino. Sem amortecimento adequado, joelho e tornozelo sofrem a cada aterrissagem.</div>
+      </div>
+    </div>
+    <div class="arg-card">
+      <div class="arg-icon">⬆️</div>
+      <div>
+        <div class="arg-title">Placa de fibra de carbono = saltos mais altos</div>
+        <div class="arg-text">Uma placa interna reforçada com fibra de carbono converte a pressão do salto em força vertical. Essa tecnologia foi desenvolvida com <strong>Yuji Nishida</strong> (campeão olímpico) e <strong>Jean Patry</strong> (medalha da Liga das Nações). Não é marketing — é engenharia validada por atletas de elite.</div>
+      </div>
+    </div>
+    <div class="arg-card">
+      <div class="arg-icon">🦶</div>
+      <div>
+        <div class="arg-title">Suporte de tornozelo com MONO-SOCK®</div>
+        <div class="arg-text">A construção MONO-SOCK® envolve tornozelo e calcanhar como uma segunda pele, oferecendo estabilidade sem perder a mobilidade natural do pé. Torção de tornozelo é o acidente mais comum no vôlei — esse sistema reduz muito esse risco.</div>
+      </div>
+    </div>
+    <div class="arg-card">
+      <div class="arg-icon">🏐</div>
+      <div>
+        <div class="arg-title">Feito exclusivamente para vôlei indoor</div>
+        <div class="arg-text">Tênis de corrida ou "all-around" não têm a sola e o amortecimento corretos para quadra. Usar o tênis errado é como usar óculos com a graduação errada — você funciona, mas com mais esforço e muito mais risco de se machucar.</div>
+      </div>
+    </div>
+    <div class="arg-card">
+      <div class="arg-icon">🌿</div>
+      <div>
+        <div class="arg-title">Material sustentável</div>
+        <div class="arg-text">A espuma é feita com <strong>aproximadamente 24% de material de base biológica</strong> de fontes renováveis. É o primeiro tênis indoor a reportar suas emissões totais de CO₂. Uma escolha que faz sentido para quem se importa com o planeta.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat">
+      <span class="stat-num">2×</span>
+      <span class="stat-label">Amortecimento vs tênis comum</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">+alto</span>
+      <span class="stat-label">Salto com a placa de carbono</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">24%</span>
+      <span class="stat-label">Material bio-renovável</span>
+    </div>
+    <div class="stat">
+      <span class="stat-num">Pro</span>
+      <span class="stat-label">Usado por campeões olímpicos</span>
+    </div>
+  </div>
+</section>
+
+<!-- SEÇÃO 3 — TÊNIS ERRADO -->
+<section id="tenis-errado">
+  <span class="section-eyebrow">Parte 03 — Qualquer tênis serve?</span>
+  <h2 class="section-title">Não é qualquer<br>tênis que <em>serve.</em></h2>
+
+  <div class="letter-card" style="margin-bottom:40px">
+    <div class="letter-body">
+      <p>Mãe, eu entendo que parece exagero. Afinal, um tênis é um tênis, né? Protege o pé, tem sola, serve. <strong>Mas vôlei não é caminhada.</strong></p>
+      <p>No vôlei, eu salto e aterriso com o peso do corpo inteiro concentrado nas articulações, dezenas de vezes por treino. O tênis que uso hoje — um tênis comum — não foi feito para isso. <strong>É como usar chinelo para correr uma maratona:</strong> funciona por um tempo, mas o corpo paga o preço.</p>
+    </div>
+  </div>
+
+  <div class="compare">
+    <div class="compare-header">
+      <div>Característica</div>
+      <div>❌ Tênis comum</div>
+      <div>✅ Asics Metarise 2</div>
+    </div>
+    <div class="compare-row">
+      <div>Amortecimento para saltos</div>
+      <div>Genérico — feito para caminhada/corrida reta</div>
+      <div>FF BLAST™ ECO — desenvolvido para aterrissagens repetidas de salto</div>
+    </div>
+    <div class="compare-row">
+      <div>Suporte lateral</div>
+      <div>Mínimo — o pé torce em mudanças de direção</div>
+      <div>MONO-SOCK® segura tornozelo e calcanhar com estabilidade real</div>
+    </div>
+    <div class="compare-row">
+      <div>Sola para quadra</div>
+      <div>Borracha comum — escorrega em piso de ginásio</div>
+      <div>Sola aderente específica para piso indoor</div>
+    </div>
+    <div class="compare-row">
+      <div>Impulso no salto</div>
+      <div>Nenhum — perde energia no impacto</div>
+      <div>Placa de carbono converte pressão em força vertical</div>
+    </div>
+    <div class="compare-row">
+      <div>Risco de lesão</div>
+      <div>Alto — estrutura inadequada para o vôlei</div>
+      <div>Baixo — projetado exatamente para esses movimentos</div>
+    </div>
+  </div>
+
+  <div class="injury-banner">
+    <h3>⚠️ O que acontece com quem usa tênis errado</h3>
+    <p>Não é alarmismo — são as lesões mais comuns em jogadores que usam calçado inadequado para vôlei:</p>
+  </div>
+
+  <div class="injury-grid">
+    <div class="injury-item">
+      <div class="inj-title">Entorse de tornozelo</div>
+      <div class="inj-cause">Sem suporte lateral, o tornozelo vira nas mudanças rápidas de direção. É a lesão mais comum no vôlei.</div>
+    </div>
+    <div class="injury-item">
+      <div class="inj-title">Tendinite patelar</div>
+      <div class="inj-cause">Amortecimento insuficiente sobrecarrega o tendão do joelho ao longo do tempo com aterrissagens repetidas.</div>
+    </div>
+    <div class="injury-item">
+      <div class="inj-title">Dor no calcanhar</div>
+      <div class="inj-cause">Fasciite plantar causada pelo impacto repetido sem absorção adequada nas aterrissagens de salto.</div>
+    </div>
+    <div class="injury-item">
+      <div class="inj-title">Escorregão na quadra</div>
+      <div class="inj-cause">Sola inadequada para piso de ginásio aumenta risco de quedas e traumas agudos.</div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px">
+    <span class="section-eyebrow">Quebrando os mitos</span>
+  </div>
+
+  <div class="myth-grid">
+    <div class="myth-card bad">
+      <span class="myth-label">❌ "É só vontade de gastar"</span>
+      <p>Tênis de vôlei específico não é luxo. É equipamento — como chuteira para futebol. Cada esporte tem o calçado certo.</p>
+    </div>
+    <div class="myth-card good">
+      <span class="myth-label">✅ A realidade</span>
+      <p>Jogar com calçado errado aumenta o risco de lesão. Lesão = médico, fisioterapia, afastamento. Isso sai muito mais caro.</p>
+    </div>
+    <div class="myth-card bad">
+      <span class="myth-label">❌ "Qualquer tênis serve"</span>
+      <p>Tênis comum não tem amortecimento para aterrissagens repetidas nem suporte lateral adequado para vôlei.</p>
+    </div>
+    <div class="myth-card good">
+      <span class="myth-label">✅ A realidade</span>
+      <p>Um bom tênis de vôlei dura 1–2 anos de uso regular. O custo diluído é pequeno frente ao benefício para a saúde.</p>
+    </div>
+    <div class="myth-card bad">
+      <span class="myth-label">❌ "É moda, vai enjoar"</span>
+      <p>O design amarelo é do modelo "Paris", mas o que importa é a tecnologia. A estética é só consequência da engenharia.</p>
+    </div>
+    <div class="myth-card good">
+      <span class="myth-label">✅ A realidade</span>
+      <p>O vôlei não é passageiro — é uma atividade física regular. O tênis vai ter uso real e constante.</p>
+    </div>
+  </div>
+</section>
+
+<!-- SEÇÃO 4 — FINANCEIRO -->
+<section id="financeiro">
+  <span class="section-eyebrow">Parte 04 — O valor</span>
+  <h2 class="section-title">A conta que<br>você não <em>viu.</em></h2>
+
+  <div class="math-card">
+    <p>Vamos pensar juntos no cenário onde eu continuo com tênis comum e me machuco — o que é só questão de tempo:</p>
+    <div class="math-row">
+      <span class="label">Consulta ortopedista</span>
+      <span class="value red">R$ 300 – 500</span>
+    </div>
+    <div class="math-row">
+      <span class="label">Raio-X / ressonância magnética</span>
+      <span class="value red">R$ 200 – 800</span>
+    </div>
+    <div class="math-row">
+      <span class="label">Fisioterapia (10 sessões)</span>
+      <span class="value red">R$ 800 – 1.500</span>
+    </div>
+    <div class="math-row">
+      <span class="label">Afastamento do esporte</span>
+      <span class="value red">Semanas ou meses</span>
+    </div>
+    <div class="math-total">
+      <span>Total possível sem o tênis certo</span>
+      <span>R$ 1.300 – 2.800+</span>
+    </div>
+
+    <div class="math-divider">
+      <div class="math-row">
+        <span class="label">Asics Metarise 2 Paris</span>
+        <span class="value grn">Muito menos que isso</span>
+      </div>
+      <div class="math-row">
+        <span class="label">Proteção real das articulações</span>
+        <span class="value grn">✅ Incluída</span>
+      </div>
+      <div class="math-row">
+        <span class="label">Joelhos e tornozelos saudáveis</span>
+        <span class="value grn">✅ Incluída</span>
+      </div>
+      <div class="math-row">
+        <span class="label">Tranquilidade para você</span>
+        <span class="value grn">✅ Incluída</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEÇÃO 5 — O CARTÃO -->
+<section id="cartao">
+  <span class="section-eyebrow">Parte 05 — O detalhe importante</span>
+  <h2 class="section-title">Você não vai<br>gastar <em>nada.</em></h2>
+
+  <div class="highlight-card" style="margin-bottom:40px">
+    <h2>O ponto que talvez não ficou claro 💡</h2>
+    <p>Não estou pedindo que você <strong>pague</strong> o tênis. Estou pedindo que você <strong>empreste o cartão</strong> para eu parcelar — e eu mesmo arco com cada parcela, antes do vencimento, todo mês. O cartão é só o instrumento. <strong>O dinheiro é meu.</strong></p>
+  </div>
+
+  <span class="section-eyebrow" style="margin-bottom:16px;display:block">Como fica parcelado — simulação de R$ 800</span>
+  <div class="parcelas">
+    <div class="parcelas-header">Simulação — tênis de R$ 800</div>
+    <div class="parcela-row">
+      <div>
+        <div class="parcela-n">À vista</div>
+        <div class="parcela-compare">Tudo de uma vez</div>
+      </div>
+      <div class="parcela-val">R$ 800</div>
+    </div>
+    <div class="parcela-row">
+      <div>
+        <div class="parcela-n">6× sem juros</div>
+        <div class="parcela-compare">Por 6 meses</div>
+      </div>
+      <div class="parcela-val">R$ 133/mês</div>
+    </div>
+    <div class="parcela-row">
+      <div>
+        <div class="parcela-n">10× sem juros</div>
+        <div class="parcela-compare">Por 10 meses</div>
+      </div>
+      <div style="display:flex;align-items:center">
+        <div class="parcela-val">R$ 80/mês</div>
+        <span class="parcela-star">MELHOR</span>
+      </div>
+    </div>
+    <div class="parcela-row">
+      <div>
+        <div class="parcela-n">12× sem juros</div>
+        <div class="parcela-compare">Por 12 meses</div>
+      </div>
+      <div class="parcela-val">R$ 67/mês</div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px">
+    <span class="section-eyebrow" style="margin-bottom:16px;display:block">Como funciona na prática</span>
+    <div class="steps">
+      <div class="step">
+        <div class="step-num">1</div>
+        <div>
+          <div class="step-title">Você empresta o cartão</div>
+          <div class="step-text">Só para finalizar a compra online ou na loja. Cinco minutos no máximo.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">2</div>
+        <div>
+          <div class="step-title">A fatura chega todo mês</div>
+          <div class="step-text">Cada parcela aparece na sua fatura — mas eu passo o dinheiro pra você <strong>antes do vencimento</strong>, todo mês, sem falta.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">3</div>
+        <div>
+          <div class="step-title">Você não desembolsa nada</div>
+          <div class="step-text">O cartão é o meio. O dinheiro é meu. Seu bolso fica exatamente igual ao de hoje.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num">4</div>
+        <div>
+          <div class="step-title">Eu jogo vôlei com segurança</div>
+          <div class="step-text">Com o tênis certo, sem risco de lesão — e você fica tranquila sabendo que estou protegido na quadra. 🏐</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="margin-top:40px">
+    <span class="section-eyebrow" style="margin-bottom:16px;display:block">O custo real de cada escolha</span>
+    <div class="custo-grid">
+      <div class="custo-card bad">
+        <span class="custo-label">❌ Continuar com tênis comum</span>
+        <div class="custo-item">Risco alto de entorse de tornozelo</div>
+        <div class="custo-item">Risco de tendinite no joelho</div>
+        <div class="custo-item">Ortopedista: R$ 300–500</div>
+        <div class="custo-item">Fisioterapia: R$ 800–1.500</div>
+        <div class="custo-item">Afastamento do esporte</div>
+        <div class="custo-total">Até R$ 2.000+ de prejuízo</div>
+      </div>
+      <div class="custo-card good">
+        <span class="custo-label">✅ Asics Metarise 2</span>
+        <div class="custo-item">Amortecimento para aterrissagens</div>
+        <div class="custo-item">Suporte real de tornozelo</div>
+        <div class="custo-item">Sola específica para quadra</div>
+        <div class="custo-item">Pago por mim, parcelado</div>
+        <div class="custo-item">Você não desembolsa nada</div>
+        <div class="custo-total">R$ 0 do seu bolso 💚</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SEÇÃO 6 — FINAL -->
+<section id="final" style="padding-bottom:100px">
+  <span class="section-eyebrow">Parte 06 — Conclusão</span>
+  <h2 class="section-title">Resumindo<br>tudo em <em>uma frase.</em></h2>
+
+  <div class="final-section">
+    <h3>Mãe, você me ensinou a fazer as coisas direito.</h3>
+    <p>Não estou pedindo um presente fútil. Estou pedindo um equipamento que vai me deixar jogar melhor, machucar menos e me motivar a continuar me exercitando.</p>
+    <p>Você não está sendo pedida para gastar dinheiro. Está sendo pedida para <strong>emprestar o cartão por 5 minutos</strong> para que eu possa me proteger enquanto faço um esporte que amo.</p>
+    <p>Eu pago. Eu cuido. Você só abre a porta.</p>
+    <p>Pode confiar em mim. 💚</p>
+    <span class="sig">Com amor e responsabilidade — seu filho/filha 🏐</span>
+  </div>
+</section>
+
+</body>
+</html>
